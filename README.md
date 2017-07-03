@@ -3,7 +3,9 @@ A simple golang templating program for docker-compose, taking in
 modular compose service, volume, network, and secret definitions,
 merging them together into a single docker-compose.yml, and 
 writing out any values from an associated config file for that
-applications various environments
+applications various environments. Modular compose component templates
+are stored in `.tmpl` files, while environmental configs are
+stored in `.json` files.
 
 # Usage
 ## Basic
@@ -33,7 +35,7 @@ any arguments to load all of the components for that key-type.
 ##### Example
 `composiler --service webapp,redis --network --volume redis load`
 
-Unless directed otherwise (`--file` flag), composiler will look
+Unless directed otherwise (`--conf` flag), composiler will look
 for the compose component templates and the environment configuration
 files to be in the `/composiler` directory. The directory structure
 for composiler to find the necessary components to build the final
@@ -41,9 +43,9 @@ compose file is:
 ```
 composiler
     ├── configs
-    │   ├── load.conf
-    │   ├── production.conf
-    │   └── test.conf
+    │   ├── load.json
+    │   ├── production.json
+    │   └── test.json
     └── templates
         ├── networks
         │   └── redis.tmpl
