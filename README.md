@@ -13,7 +13,7 @@ configs in the <environment>.conf file with all available templates
 to deploy the full application stack as defined by your compose
 templates. Great for deploying to a Swarm where all services are
 run on the same logical docker daemon.
-### Example
+##### Example
 `composiler load`
 
 
@@ -30,7 +30,7 @@ are specified, a comma-separated list of named volumes, networks,
 etc. may be supplied to perform a similar targeted loading of the
 compose file component, or these flags may be supplied without
 any arguments to load all of the components for that key-type.
-### Example
+##### Example
 `composiler --service webapp,redis --network --volume redis load`
 
 Unless directed otherwise (`--file` flag), composiler will look
