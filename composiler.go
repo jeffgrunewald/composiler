@@ -16,9 +16,11 @@ func main() {
     flag.PrintDefaults()
   }
 
+  var conf string
   var environment string
   var printVersion bool
 
+  flag.StringVar(&conf, "conf", "/composiler", "Set location of the configs and templates")
   flag.BoolVar(&printVersion, "version", false, "Print version and exit merrily.")
 
   flag.Parse()
@@ -46,11 +48,11 @@ func main() {
   t.Execute(os.Stdout, c)
 */
 
-  servs := ConcatTemplates("./templatedir")
-  vols := ConcatTemplates("./volumedir")
+  servs := ConcatTemplates(conf + "/templates/services")
+  vols := ConcatTemplates(conf + "/templates/volumes")
   s := [][]byte{servs, vols}
   allModules := bytes.Join(s, []byte("\n"))
   ioutil.WriteFile("docker-compose.yml", allModules, 0644)
 
-  fmt.Printf(environment)
+  fmt.Printf("Environment is: %s\n", environment)
 }
