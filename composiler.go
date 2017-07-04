@@ -50,7 +50,9 @@ func main() {
 
   servs := ConcatTemplates(conf + "/templates/services")
   vols := ConcatTemplates(conf + "/templates/volumes")
-  s := [][]byte{servs, vols}
+  nets := ConcatTemplates(conf + "/templates/networks")
+  secs := ConcatTemplates(conf + "/templates/secrets")
+  s := [][]byte{servs, vols, nets, secs}
   allModules := bytes.Join(s, []byte("\n"))
   ioutil.WriteFile("docker-compose.yml", allModules, 0644)
 
