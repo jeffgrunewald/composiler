@@ -1,16 +1,13 @@
 package main
 
 import (
-//  "errors"
+  "bytes"
   "flag"
   "fmt"
+  "io/ioutil"
   "os"
-//  "path/filepath"
-//  "strings"
 //  "text/template"
 )
-
-const Version = "x.y.z" //DELETE ME WHEN YOU START COMPILING
 
 func main() {
   flag.Usage = func() {
@@ -39,5 +36,21 @@ func main() {
       flag.Usage()
       os.Exit(1)
   }
-  fmt.Printf("Environment is: %s\n", environment)
+
+/*
+  type Config struct {
+    Environment string
+  }
+  c := Config{Environment: environment}
+  t, _ := template.New("compose.tmpl").ParseFiles("compose.tmpl")
+  t.Execute(os.Stdout, c)
+*/
+
+  servs := ConcatTemplates("./templatedir")
+  vols := ConcatTemplates("./volumedir")
+  s := [][]byte{servs, vols}
+  allModules := bytes.Join(s, []byte("\n"))
+  ioutil.WriteFile("docker-compose.yml", allModules, 0644)
+
+  fmt.Printf(environment)
 }
