@@ -15,11 +15,13 @@ func main() {
     flag.PrintDefaults()
   }
 
+  var composeVersion string
   var conf string
   var environment string
   var printVersion bool
 
-  flag.StringVar(&conf, "conf", "/composiler", "Set location of the configs and templates")
+  flag.StringVar(&composeVersion, "compose-version", "3.3", "Set the version of the compose file format.")
+  flag.StringVar(&conf, "conf", "/composiler", "Set location of the configs and templates.")
   flag.BoolVar(&printVersion, "version", false, "Print version and exit merrily.")
 
   flag.Parse()
@@ -48,8 +50,9 @@ func main() {
     Nets string
     Vols string
     Secs string
+    ComposeVersion string
   }
-  baseTemplate := BaseTemplate{Srvs: srvs, Nets: nets, Vols: vols, Secs: secs}
+  baseTemplate := BaseTemplate{Srvs: srvs, Nets: nets, Vols: vols, Secs: secs, ComposeVersion: composeVersion}
   t, _ := template.New("base-compose.tmpl").ParseFiles("base-compose.tmpl")
   t.Execute(os.Stdout, baseTemplate)
 
