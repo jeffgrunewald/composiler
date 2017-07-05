@@ -1,12 +1,11 @@
 package main
 
 import (
-  "bytes"
   "flag"
   "fmt"
-  "io/ioutil"
+//  "io/ioutil"
   "os"
-//  "text/template"
+  "text/template"
 )
 
 func main() {
@@ -39,22 +38,20 @@ func main() {
       os.Exit(1)
   }
 
-/*
-  type Config struct {
-    Environment string
-  }
-  c := Config{Environment: environment}
-  t, _ := template.New("compose.tmpl").ParseFiles("compose.tmpl")
-  t.Execute(os.Stdout, c)
-*/
-
-  servs := ConcatTemplates(conf + "/templates/services")
+  srvs := ConcatTemplates(conf + "/templates/services")
   vols := ConcatTemplates(conf + "/templates/volumes")
   nets := ConcatTemplates(conf + "/templates/networks")
   secs := ConcatTemplates(conf + "/templates/secrets")
-  s := [][]byte{servs, vols, nets, secs}
-  allModules := bytes.Join(s, []byte("\n"))
-  ioutil.WriteFile("docker-compose.yml", allModules, 0644)
+
+  type BaseTemplate struct {
+    Srvs string
+    Nets string
+    Vols string
+    Secs string
+  }
+  baseTemplate := BaseTemplate{Srvs: srvs, Nets: nets, Vols: vols, Secs: secs}
+  t, _ := template.New("base-compose.tmpl").ParseFiles("base-compose.tmpl")
+  t.Execute(os.Stdout, baseTemplate)
 
   fmt.Printf("Environment is: %s\n", environment)
 }

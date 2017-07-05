@@ -7,8 +7,8 @@ import (
   "strings"
 )
 
-func ConcatTemplates(dirPath string) []byte {
-  var combinedTemplates []byte
+func ConcatTemplates(dirPath string) string {
+  var combinedTemplateBytes []byte
   filepath.Walk(dirPath, func(path string, info os.FileInfo, err error) error {
     if !info.IsDir() && strings.HasSuffix(info.Name(), ".tmpl") {
       println("adding component " + path + " ...")
@@ -16,9 +16,13 @@ func ConcatTemplates(dirPath string) []byte {
       if err != nil {
         return err
       }
-      combinedTemplates = append(combinedTemplates, b...)
+      combinedTemplateBytes = append(combinedTemplateBytes, b...)
     }
     return nil
   })
-  return combinedTemplates
+  combinedTemplateString := string(combinedTemplateBytes[:])
+
+  finalTemplateString := strings.Replace(combinedTemplateString, "\n", "\n  ", -1)
+
+  return finalTemplateString
 }

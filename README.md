@@ -1,5 +1,5 @@
 # Description
-A simple golang templating program for docker-compose, taking in
+(com-poh-sih-ler) A simple golang templating program for docker-compose, taking in
 modular compose service, volume, network, and secret definitions,
 merging them together into a single docker-compose.yml, and 
 writing out any values from an associated config file for that
