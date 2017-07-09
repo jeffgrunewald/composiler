@@ -3,7 +3,7 @@ package main
 import (
   "flag"
   "fmt"
-//  "io/ioutil"
+  "log"
   "os"
   "text/template"
 )
@@ -14,15 +14,6 @@ func main() {
     fmt.Printf("  composiler <environment>\n")
     flag.PrintDefaults()
   }
-
-  var composeVersion string
-  var conf string
-  var environment string
-  var printVersion bool
-
-  flag.StringVar(&composeVersion, "compose-version", "3.3", "Set the version of the compose file format.")
-  flag.StringVar(&conf, "conf", "/composiler", "Set location of the configs and templates.")
-  flag.BoolVar(&printVersion, "version", false, "Print version and exit merrily.")
 
   flag.Parse()
 
@@ -40,21 +31,54 @@ func main() {
       os.Exit(1)
   }
 
-  srvs := ConcatTemplates(conf + "/templates/services")
-  vols := ConcatTemplates(conf + "/templates/volumes")
-  nets := ConcatTemplates(conf + "/templates/networks")
-  secs := ConcatTemplates(conf + "/templates/secrets")
-
-  type BaseTemplate struct {
-    Srvs string
-    Nets string
-    Vols string
-    Secs string
-    ComposeVersion string
+  if err := initConfig(); err != nil {
+    log.Fatal(err.Error())
   }
-  baseTemplate := BaseTemplate{Srvs: srvs, Nets: nets, Vols: vols, Secs: secs, ComposeVersion: composeVersion}
-  t, _ := template.New("base-compose.tmpl").ParseFiles("base-compose.tmpl")
-  t.Execute(os.Stdout, baseTemplate)
+
+  if config.Service == "all" {
+    templateSkeleton.Services = ConcatTemplates(conf + "/templates/services")
+  } else {
+    fmt.Printf("Must set at least one service definition to compose\n")
+    os.Exit(1)
+  }
+
+  if config.Network == "all" {
+    templateSkeleton.Networks = ConcatTemplates(conf + "/templates/networks")
+  } else {
+    fmt.Printf("Must set at least one network definition to compose\n")
+    os.Exit(1)
+  }
+
+  if config.Secret == "all" {
+    templateSkeleton.Secrets = ConcatTemplates(conf + "/templates/secrets")
+  } else {
+    fmt.Printf("Must set at least one secret definition to compose\n")
+    os.Exit(1)
+  }
+
+  if config.Volume == "all" {
+    templateSkeleton.Volumes = ConcatTemplates(conf + "/templates/volumes")
+  } else {
+    fmt.Printf("Must set at least one volume definition to compose\n")
+    os.Exit(1)
+  }
+  
+  t, err := template.New("base template").Parse(BaseTemplate)
+  if err != nil {
+    log.Print(err)
+    return
+  }
+  templateFile, err := os.Create("docker-compose.yml")
+  if err != nil {
+    log.Println("create file: ", err)
+    return
+  }
+  err = t.Execute(templateFile, templateSkeleton)
+  if err != nil {
+    log.Print("execute: ", err)
+    return
+  }
+  templateFile.Close()
 
   fmt.Printf("Environment is: %s\n", environment)
 }
