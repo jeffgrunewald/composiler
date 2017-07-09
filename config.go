@@ -11,6 +11,7 @@ var (
   config           Config
   environment      string
   network          string
+  outFile          string
   printVersion     bool
   secret           string
   service          string
@@ -22,6 +23,7 @@ type Config struct {
   Conf           string
   Environment    string
   Network        string
+  OutFile        string
   Secret         string
   Service        string
   Volume         string
@@ -39,6 +41,7 @@ func init() {
   flag.StringVar(&composeVersion, "compose-version", "3.3", "Set the version of the compose file format.")
   flag.StringVar(&conf, "conf", "/composiler", "Set location of the configs and templates.")
   flag.StringVar(&network, "network", "all", "Networks to be bundled into the compose file.")
+  flag.StringVar(&outFile, "out", "docker-compose.yml", "Name of output file.")
   flag.BoolVar(&printVersion, "version", false, "Print verion and exit merrily.")
   flag.StringVar(&secret, "secret", "all", "Secrets to be bundled into the compose file.")
   flag.StringVar(&service, "service", "all", "Services to be bundled into the compose file.")
@@ -52,6 +55,7 @@ func initConfig() error {
     Conf:           "/composiler",
     Environment:    "",
     Network:        "all",
+    OutFile:        "docker-compose.yml",
     Secret:         "all",
     Service:        "all",
     Volume:         "all",
@@ -78,6 +82,8 @@ func setFlagConfig(f *flag.Flag) {
       config.Conf = conf
     case "network":
       config.Network = network
+    case "out":
+      config.OutFile = outFile
     case "secret":
       config.Secret = secret
     case "service":

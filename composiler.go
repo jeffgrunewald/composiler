@@ -68,7 +68,7 @@ func main() {
     log.Print(err)
     return
   }
-  templateFile, err := os.Create("docker-compose.yml")
+  templateFile, err := os.Create(config.OutFile)
   if err != nil {
     log.Println("create file: ", err)
     return
