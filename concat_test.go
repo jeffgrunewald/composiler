@@ -1,12 +1,13 @@
 package main
 
 import (
-  "io/ioutil"
+  "fmt"
+  "strings"
   "testing"
 )
 
 func TestConcatTemplates(t *testing.T) {
-  b := ConcatTemplates("./templatedir")
+  b := ConcatTemplates("./templates/services")
   t.Log(string(b))
-  ioutil.WriteFile("all.tmpl", b, 0644)
+  fmt.Println(strings.Contains(b, "redis") && strings.Contains(b, "web"))
 }
