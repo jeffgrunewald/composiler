@@ -5,7 +5,6 @@ import (
 )
 
 var (
-  combinedTemplate string
   composeVersion   string
   conf             string
   config           Config
@@ -54,7 +53,7 @@ func initConfig() error {
   config = Config{
     ComposeVersion: "3.3",
     Conf:           "/composiler",
-    Environment:    "",
+    Environment:    environment,
     Network:        "all",
     OutFile:        "docker-compose.yml",
     Secret:         "all",

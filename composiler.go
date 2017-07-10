@@ -5,7 +5,6 @@ import (
   "fmt"
   "log"
   "os"
-  "text/template"
 )
 
 func main() {
@@ -36,51 +35,40 @@ func main() {
   }
 
   if config.Service == "all" {
-    templateSkeleton.Services = ConcatTemplates(conf + "/templates/services")
+    templateSkeleton.Services = ConcatTemplates(config.Conf + "/templates/services")
   } else {
     fmt.Printf("Must set at least one service definition to compose\n")
     os.Exit(1)
   }
 
   if config.Network == "all" {
-    templateSkeleton.Networks = ConcatTemplates(conf + "/templates/networks")
+    templateSkeleton.Networks = ConcatTemplates(config.Conf + "/templates/networks")
   } else {
     fmt.Printf("Must set at least one network definition to compose\n")
     os.Exit(1)
   }
 
   if config.Secret == "all" {
-    templateSkeleton.Secrets = ConcatTemplates(conf + "/templates/secrets")
+    templateSkeleton.Secrets = ConcatTemplates(config.Conf + "/templates/secrets")
   } else {
     fmt.Printf("Must set at least one secret definition to compose\n")
     os.Exit(1)
   }
 
   if config.Volume == "all" {
-    templateSkeleton.Volumes = ConcatTemplates(conf + "/templates/volumes")
+    templateSkeleton.Volumes = ConcatTemplates(config.Conf + "/templates/volumes")
   } else {
     fmt.Printf("Must set at least one volume definition to compose\n")
     os.Exit(1)
   }
   
-  BuildCombinedTemplate()
+  combinedTemplate := BuildCombinedTemplate(BaseTemplate, templateSkeleton)
 
-  t, err := template.New("combined template").Parse(combinedTemplate)
-  if err != nil {
-    log.Print(err)
-    return
-  }
-  composeFile, err := os.Create(config.OutFile)
-  if err != nil {
-    log.Println("create file: ", err)
-    return
-  }
-  err = t.Execute(composeFile, envStruct)
-  if err != nil {
-    log.Print("execute: ", err)
-    return
-  }
-  composeFile.Close()
+  fmt.Printf("pulling config from environment: %s\n", config.Environment)
+  jsonData := DecodeJsonConfig(config.Conf + "/configs/" + config.Environment + ".json")
 
-  fmt.Printf("Environment is: %s\n", environment)
+  fmt.Printf("writing out final compose file to: %s\n", config.OutFile)
+  if err := BuildOutputTemplate(combinedTemplate, jsonData, config.OutFile); err != nil {
+    log.Fatal(err.Error())
+  }
 }
