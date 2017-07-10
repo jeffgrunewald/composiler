@@ -35,35 +35,16 @@ func main() {
   }
 
   servicePath := config.Conf + "/templates/services"
-  if config.Service == "all" {
-    templateSkeleton.Services = ConcatAllTemplates(servicePath)
-  } else {
-    templateSkeleton.Services = ConcatSelectTemplates(servicePath, serviceList)
-  }
+  templateSkeleton.Services = ConcatTemplates(servicePath, config.Service)
 
   networkPath := config.Conf + "/templates/networks"
-  if config.Network == "all" {
-    templateSkeleton.Networks = ConcatAllTemplates(networkPath)
-  } else {
-    fmt.Printf("Must set at least one network definition to compose\n")
-    os.Exit(1)
-  }
+  templateSkeleton.Networks = ConcatTemplates(networkPath, config.Network)
 
   secretPath := config.Conf + "/templates/secrets"
-  if config.Secret == "all" {
-    templateSkeleton.Secrets = ConcatAllTemplates(secretPath)
-  } else {
-    fmt.Printf("Must set at least one secret definition to compose\n")
-    os.Exit(1)
-  }
+  templateSkeleton.Secrets = ConcatTemplates(secretPath, config.Secret)
 
   volumePath := config.Conf + "/templates/volumes"
-  if config.Volume == "all" {
-    templateSkeleton.Volumes = ConcatAllTemplates(volumePath)
-  } else {
-    fmt.Printf("Must set at least one volume definition to compose\n")
-    os.Exit(1)
-  }
+  templateSkeleton.Volumes = ConcatTemplates(volumePath, config.Volume)
   
   combinedTemplate := BuildCombinedTemplate(BaseTemplate, templateSkeleton)
 

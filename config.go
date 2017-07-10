@@ -11,27 +11,23 @@ var (
   config           Config
   environment      string
   network          string
-  networkList      []string
   outFile          string
   printVersion     bool
   secret           string
-  secretList       []string
   service          string
-  serviceList      []string
   templateSkeleton TemplateSkeleton
   volume           string
-  volumeList       []string
 )
 
 type Config struct {
   ComposeVersion string
   Conf           string
   Environment    string
-  Network        string
+  Network        []string
   OutFile        string
-  Secret         string
-  Service        string
-  Volume         string
+  Secret         []string
+  Service        []string
+  Volume         []string
 }
 
 type TemplateSkeleton struct {
@@ -59,21 +55,17 @@ func initConfig() error {
     ComposeVersion: "3.3",
     Conf:           "/composiler",
     Environment:    environment,
-    Network:        "all",
+    Network:        []string{},
     OutFile:        "docker-compose.yml",
-    Secret:         "all",
-    Service:        "all",
-    Volume:         "all",
+    Secret:         []string{},
+    Service:        []string{},
+    Volume:         []string{},
   }
 
   processFlags()
 
   templateSkeleton = TemplateSkeleton{
     ComposeVersion: config.ComposeVersion,
-  }
-
-  if config.Service != "all" {
-    serviceList = strings.Split(config.Service, ",")
   }
 
   return nil
@@ -90,14 +82,14 @@ func setFlagConfig(f *flag.Flag) {
     case "conf":
       config.Conf = conf
     case "network":
-      config.Network = network
+      config.Network = strings.Split(network, ",")
     case "out":
       config.OutFile = outFile
     case "secret":
-      config.Secret = secret
+      config.Secret = strings.Split(secret, ",")
     case "service":
-      config.Service = service
+      config.Service = strings.Split(service, ",")
     case "volume":
-      config.Volume = volume
+      config.Volume = strings.Split(volume, ",")
   }
 }
