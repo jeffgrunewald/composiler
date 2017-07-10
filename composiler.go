@@ -34,29 +34,32 @@ func main() {
     log.Fatal(err.Error())
   }
 
+  servicePath := config.Conf + "/templates/services"
   if config.Service == "all" {
-    templateSkeleton.Services = ConcatTemplates(config.Conf + "/templates/services")
+    templateSkeleton.Services = ConcatAllTemplates(servicePath)
   } else {
-    fmt.Printf("Must set at least one service definition to compose\n")
-    os.Exit(1)
+    templateSkeleton.Services = ConcatSelectTemplates(servicePath, serviceList)
   }
 
+  networkPath := config.Conf + "/templates/networks"
   if config.Network == "all" {
-    templateSkeleton.Networks = ConcatTemplates(config.Conf + "/templates/networks")
+    templateSkeleton.Networks = ConcatAllTemplates(networkPath)
   } else {
     fmt.Printf("Must set at least one network definition to compose\n")
     os.Exit(1)
   }
 
+  secretPath := config.Conf + "/templates/secrets"
   if config.Secret == "all" {
-    templateSkeleton.Secrets = ConcatTemplates(config.Conf + "/templates/secrets")
+    templateSkeleton.Secrets = ConcatAllTemplates(secretPath)
   } else {
     fmt.Printf("Must set at least one secret definition to compose\n")
     os.Exit(1)
   }
 
+  volumePath := config.Conf + "/templates/volumes"
   if config.Volume == "all" {
-    templateSkeleton.Volumes = ConcatTemplates(config.Conf + "/templates/volumes")
+    templateSkeleton.Volumes = ConcatAllTemplates(volumePath)
   } else {
     fmt.Printf("Must set at least one volume definition to compose\n")
     os.Exit(1)

@@ -2,6 +2,7 @@ package main
 
 import (
   "flag"
+  "strings"
 )
 
 var (
@@ -10,12 +11,16 @@ var (
   config           Config
   environment      string
   network          string
+  networkList      []string
   outFile          string
   printVersion     bool
   secret           string
+  secretList       []string
   service          string
+  serviceList      []string
   templateSkeleton TemplateSkeleton
   volume           string
+  volumeList       []string
 )
 
 type Config struct {
@@ -65,6 +70,10 @@ func initConfig() error {
 
   templateSkeleton = TemplateSkeleton{
     ComposeVersion: config.ComposeVersion,
+  }
+
+  if config.Service != "all" {
+    serviceList = strings.Split(config.Service, ",")
   }
 
   return nil
