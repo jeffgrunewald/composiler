@@ -5,7 +5,7 @@ import (
 )
 
 var (
-  templateSkeleton TemplateSkeleton
+  combinedTemplate string
   composeVersion   string
   conf             string
   config           Config
@@ -15,6 +15,7 @@ var (
   printVersion     bool
   secret           string
   service          string
+  templateSkeleton TemplateSkeleton
   volume           string
 )
 

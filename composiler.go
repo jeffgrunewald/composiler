@@ -63,22 +63,24 @@ func main() {
     os.Exit(1)
   }
   
-  t, err := template.New("base template").Parse(BaseTemplate)
+  BuildCombinedTemplate()
+
+  t, err := template.New("combined template").Parse(combinedTemplate)
   if err != nil {
     log.Print(err)
     return
   }
-  templateFile, err := os.Create(config.OutFile)
+  composeFile, err := os.Create(config.OutFile)
   if err != nil {
     log.Println("create file: ", err)
     return
   }
-  err = t.Execute(templateFile, templateSkeleton)
+  err = t.Execute(composeFile, envStruct)
   if err != nil {
     log.Print("execute: ", err)
     return
   }
-  templateFile.Close()
+  composeFile.Close()
 
   fmt.Printf("Environment is: %s\n", environment)
 }
