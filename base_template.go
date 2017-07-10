@@ -5,9 +5,9 @@ version: "{{.ComposeVersion}}"
 
 services:
   {{.Services}}
-networks:
-  {{.Networks}}
-volumes:
-  {{.Volumes}}
-secrets:
-  {{.Secrets}}`
+{{if .Networks}}networks:
+  {{.Networks}}{{end}}
+{{if .Volumes}}volumes:
+  {{.Volumes}}{{end}}
+{{if .Secrets}}secrets:
+  {{.Secrets}}{{end}}`
