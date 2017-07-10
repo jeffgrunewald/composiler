@@ -42,3 +42,10 @@ func ConcatTemplates(dirPath string, components []string) (formattedTmpl string)
   formattedTmpl = strings.Replace(string(combinedTmplBytes[:]), "\n", "\n  ", -1)
   return
 }
+
+func RemoveExtraWhitespace (input string) (output string) {
+  input = strings.Replace(input, "  \n", "\n", -1)
+  input = strings.Replace(input, "\n\n\n", "\n\n", -1)
+  output = strings.TrimSpace(input)
+  return
+}
