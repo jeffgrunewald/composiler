@@ -45,7 +45,7 @@ func main() {
 
   volumePath := config.Conf + "/templates/volumes"
   templateSkeleton.Volumes = ConcatTemplates(volumePath, config.Volume)
-  
+
   combinedTemplate := BuildCombinedTemplate(BaseTemplate, templateSkeleton)
 
   finalTemplate := RemoveExtraWhitespace(combinedTemplate)
@@ -54,7 +54,7 @@ func main() {
   jsonData := DecodeJsonConfig(config.Conf + "/configs/" + config.Environment + ".json")
 
   fmt.Printf("writing out final compose file to: %s\n", config.OutFile)
-  if err := BuildOutputTemplate(finalTemplate, jsonData, config.OutFile); err != nil {
+  if err := BuildOutputTemplate(finalTemplate, jsonData, config.Conf + config.OutFile); err != nil {
     log.Fatal(err.Error())
   }
 }
